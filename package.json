@@ -5,6 +5,7 @@
   "author": "LuisAFK",
   "repository": "https://github.com/lafkpages/minifs.git",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "devDependencies": {
     "bun-types": "latest"
