@@ -49,6 +49,15 @@ export interface MiniFSOptions {
   preferErrors?: boolean;
 }
 
+export interface ReadOptions {
+  /**
+   * If true, returns the entry instead of its content.
+   *
+   * @see Entry
+   */
+  returnEntry?: boolean;
+}
+
 export interface WriteOptions {
   /**
    * If true, creates all parent directories if they don't exist.
@@ -144,8 +153,13 @@ export class MiniFS {
     return entry;
   }
 
-  readDirectory(path: Path) {
+  readDirectory(path: Path, options?: ReadOptions) {
     const entry = this.readEntry(path);
+
+    const { returnEntry } = {
+      returnEntry: false,
+      ...options,
+    };
 
     if (entry instanceof File) {
       if (this.preferErrors) {
@@ -155,6 +169,9 @@ export class MiniFS {
     }
 
     if (entry) {
+      if (returnEntry) {
+        return entry;
+      }
       return Object.keys(entry);
     }
 
@@ -164,8 +181,13 @@ export class MiniFS {
     return null;
   }
 
-  readFile(path: Path) {
+  readFile(path: Path, options?: ReadOptions) {
     const entry = this.readEntry(path);
+
+    const { returnEntry } = {
+      returnEntry: false,
+      ...options,
+    };
 
     if (entry instanceof File) {
       if (entry.content == undefined) {
@@ -175,6 +197,9 @@ export class MiniFS {
         return null;
       }
 
+      if (returnEntry) {
+        return entry;
+      }
       return entry.content;
     }
 
