@@ -1,6 +1,7 @@
 {
   "name": "minifs",
   "version": "1.0.0",
+  "description": "An in-memory filesystem-like data structure.",
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
