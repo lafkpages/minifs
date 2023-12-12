@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Redirect output to stderr
+exec 1>&2
+
+# Check that Prettier has been run
+if ! bun run prettier --check .; then
+  echo "Prettier errors"
+  exit 1
+fi
+
+# Run tests
+bunTestOutput=$(bun test 2>&1)
+if [ "$?" != 0 ]; then
+  echo "Tests failed:"
+  echo -n "$bunTestOutput"
+  exit 3
+fi
+
+# Check for TypeScript errors
+if ! bun run tsc --noEmit; then
+  echo "TypeScript errors"
+  exit 4
+fi
