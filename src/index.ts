@@ -121,7 +121,7 @@ export class MiniFS {
           dir[pathSegment] = {};
         } else if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.createDirectory] Directory "${pathSegment}" does not exist.`
+            `[MiniFS.createDirectory] Directory "${pathSegment}" does not exist.`,
           );
         } else {
           return false;
@@ -133,7 +133,7 @@ export class MiniFS {
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.createDirectory] "${pathSegment}" is a file.`
+            `[MiniFS.createDirectory] "${pathSegment}" is a file.`,
           );
         }
         return false;
@@ -267,7 +267,7 @@ export class MiniFS {
           dir[pathSegment] = {};
         } else if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.writeFile] Directory "${pathSegment}" does not exist.`
+            `[MiniFS.writeFile] Directory "${pathSegment}" does not exist.`,
           );
         } else {
           return false;
@@ -299,7 +299,7 @@ export class MiniFS {
       if (!(pathSegment in dir)) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.removeDirectory] Directory "${pathSegment}" does not exist.`
+            `[MiniFS.removeDirectory] Directory "${pathSegment}" does not exist.`,
           );
         }
         return false;
@@ -309,7 +309,7 @@ export class MiniFS {
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.removeDirectory] "${pathSegment}" is a file.`
+            `[MiniFS.removeDirectory] "${pathSegment}" is a file.`,
           );
         }
         return false;

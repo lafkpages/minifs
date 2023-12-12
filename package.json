@@ -9,13 +9,15 @@
   "type": "module",
   "devDependencies": {
     "auto-changelog": "^2.4.0",
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "prettier": "^3.1.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist --target es6 src/index.ts",
+    "format": "prettier --write .",
     "prepublishOnly": "bun run build",
     "version": "auto-changelog"
   },

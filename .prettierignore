@@ -1,0 +1,12 @@
+# Replit
+.config
+.cache
+.upm
+
+# Build folder
+dist
+
+# Changelog
+# We want to ignore the changelog as auto-changelog might
+# have different formatting than Prettier's
+CHANGELOG.md
