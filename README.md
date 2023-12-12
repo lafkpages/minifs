@@ -2,16 +2,29 @@
 
 An in-memory filesystem-like data structure.
 
-To install dependencies:
+## Installation
+
+You can install MiniFS using npm, or your preferred package manager.
 
 ```bash
-bun install
+npm i minifs
 ```
 
-To run:
+## Usage
+
+```ts
+import { MiniFS } from "minifs";
+
+const fs = new MiniFS();
+
+fs.writeFile("foo/bar.txt", "Hello, World"); // true
+
+fs.readDirectory("foo"); // ["bar.txt"]
+fs.readFile("foo/bar.txt"); // "Hello, World"
+```
+
+## Running tests
 
 ```bash
-bun run src/index.ts
+bun test
 ```
-
-This project was created using `bun init` in bun v1.0.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
