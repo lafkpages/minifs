@@ -24,6 +24,6 @@
   ],
   "auto-changelog": {
     "commitLimit": false,
-    "package": true
+    "unreleased": true
   }
 }
