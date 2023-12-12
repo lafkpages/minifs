@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Redirect output to stderr
+exec 1>&2
+
+# Build the project
+if ! bun run build; then
+  echo "Build failed"
+  exit 2
+fi
