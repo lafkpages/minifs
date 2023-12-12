@@ -23,7 +23,25 @@ fs.readDirectory("foo"); // ["bar.txt"]
 fs.readFile("foo/bar.txt"); // "Hello, World"
 ```
 
-## Running tests
+## Development
+
+First, clone the repository and install the dependencies.
+
+```bash
+git clone https://github.com/lafkpages/minifs.git
+cd minifs
+bun install
+```
+
+Then, configure Git hooks.
+
+```bash
+git config core.hooksPath .githooks
+```
+
+### Running tests
+
+Tests are automatically run before every commit. You can also run them manually:
 
 ```bash
 bun test
