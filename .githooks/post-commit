@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Redirect output to stderr
+exec 1>&2
+
+# Generate the changelog
+if ! bun run auto-changelog; then
+  echo "Changelog generation failed"
+  exit 2
+fi
