@@ -1,4 +1,6 @@
-# minifs
+# MiniFS
+
+An in-memory filesystem-like data structure.
 
 To install dependencies:
 
