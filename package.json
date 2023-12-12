@@ -14,5 +14,8 @@
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist src/index.ts"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
