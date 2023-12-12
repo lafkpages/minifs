@@ -79,6 +79,18 @@ export interface WriteOptions {
   recursive?: boolean;
 }
 
+// Do NOT type these as ReadOptions or WriteOptions,
+// as otherwise when destructuring the options, the
+// values will show as possibly undefined as the
+// option types have optional properties.
+const defaultReadOptions = {
+  returnEntry: false,
+};
+
+const defaultWriteOptions = {
+  recursive: true,
+};
+
 export class MiniFS {
   protected files: Directory = {};
 
@@ -170,7 +182,7 @@ export class MiniFS {
     const entry = this.readEntry(path);
 
     const { returnEntry } = {
-      returnEntry: false,
+      ...defaultReadOptions,
       ...options,
     };
 
@@ -198,7 +210,7 @@ export class MiniFS {
     const entry = this.readEntry(path);
 
     const { returnEntry } = {
-      returnEntry: false,
+      ...defaultReadOptions,
       ...options,
     };
 
@@ -238,7 +250,7 @@ export class MiniFS {
     path = pathAsSegments(path);
 
     const { recursive } = {
-      recursive: true,
+      ...defaultWriteOptions,
       ...options,
     };
 
