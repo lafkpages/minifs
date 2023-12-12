@@ -4,12 +4,15 @@
   "description": "An in-memory filesystem-like data structure.",
   "author": "LuisAFK",
   "repository": "https://github.com/lafkpages/minifs.git",
-  "module": "src/index.ts",
+  "module": "dist/index.js",
   "type": "module",
   "devDependencies": {
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist src/index.ts"
   }
 }
