@@ -7,13 +7,13 @@ An in-memory filesystem-like data structure.
 You can install MiniFS using npm, or your preferred package manager.
 
 ```bash
-npm i minifs
+npm i @luisafk/minifs
 ```
 
 ## Usage
 
 ```ts
-import { MiniFS } from "minifs";
+import { MiniFS } from "@luisafk/minifs";
 
 const fs = new MiniFS();
 
