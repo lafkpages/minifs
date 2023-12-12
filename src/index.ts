@@ -30,13 +30,13 @@ export type Entry = File | Directory;
  * ["path", "to", "file.txt"]
  */
 export type Path = string | PathSegments;
-export type PathSegments = readonly string[];
+export type PathSegments = string[];
 
 /**
  * A constant representing the root path.
  * Can be passed to methods such as {@link MiniFS.readDirectory}.
  */
-export const rootPath = [] as const;
+export const rootPath = [];
 
 /**
  * Converts a {@link Path} to a {@link PathSegments} array.
