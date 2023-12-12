@@ -15,7 +15,7 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist --target es6 src/index.ts",
     "changelog": "auto-changelog",
     "prepublishOnly": "bun run build && bun run changelog"
   },
