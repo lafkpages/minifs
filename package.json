@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist --target es6 src/index.ts",
-    "changelog": "auto-changelog",
+    "changelog": "auto-changelog -p",
     "prepublishOnly": "bun run build && bun run changelog"
   },
   "files": [
