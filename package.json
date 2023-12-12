@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An in-memory filesystem-like data structure.",
   "author": "LuisAFK",
+  "repository": "https://github.com/lafkpages/minifs.git",
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
