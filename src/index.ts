@@ -30,6 +30,13 @@ export type Entry = File | Directory;
  * ["path", "to", "file.txt"]
  */
 export type Path = string | PathSegments;
+
+/**
+ * A file path represented as an array of path segments.
+ *
+ * @example
+ * ["path", "to", "file.txt"]
+ */
 export type PathSegments = string[];
 
 /**
