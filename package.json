@@ -8,13 +8,15 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "devDependencies": {
+    "auto-changelog": "^2.4.0",
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist src/index.ts"
+    "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist src/index.ts",
+    "changelog": "auto-changelog"
   },
   "files": [
     "dist"
