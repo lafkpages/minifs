@@ -52,7 +52,13 @@ function pathAsSegments(path: Path) {
   return typeof path == "string" ? path.split("/") : path;
 }
 
+/**
+ * Options for {@link MiniFS}.
+ */
 export interface MiniFSOptions {
+  /**
+   * If true, certain functions will throw errors instead of returning null.
+   */
   preferErrors?: boolean;
 }
 
