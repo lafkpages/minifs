@@ -178,6 +178,10 @@ export class MiniFS {
     return entry;
   }
 
+  readDirectory<T extends ReadOptions>(
+    path: Path,
+    options?: T,
+  ): (T["returnEntry"] extends true ? Directory : string[]) | null;
   readDirectory(path: Path, options?: ReadOptions) {
     const entry = this.readEntry(path);
 
@@ -206,6 +210,12 @@ export class MiniFS {
     return null;
   }
 
+  readFile<T extends ReadOptions>(
+    path: Path,
+    options?: T,
+  ):
+    | (T["returnEntry"] extends true ? File : NonNullable<File["content"]>)
+    | null;
   readFile(path: Path, options?: ReadOptions) {
     const entry = this.readEntry(path);
 
