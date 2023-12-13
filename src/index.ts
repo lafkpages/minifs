@@ -1,16 +1,36 @@
-export class File {
+export class Node {
+  content?: unknown;
+
+  /**
+   * Unknown data associated with the node.
+   */
+  data: Record<string, unknown> = {};
+}
+
+export class File extends Node {
   name: string;
 
   content?: string | Blob;
 
   constructor(name: string, content?: string | Blob) {
+    super();
+
     this.name = name;
     this.content = content;
   }
 }
 
-export interface Directory {
+export type DirectoryContent = {
   [fileName: string]: Entry;
+};
+export class Directory extends Node {
+  content: DirectoryContent;
+
+  constructor(content?: DirectoryContent) {
+    super();
+
+    this.content = content || {};
+  }
 }
 
 /**
@@ -43,7 +63,7 @@ export type PathSegments = string[];
  * A constant representing the root path.
  * Can be passed to methods such as {@link MiniFS.readDirectory}.
  */
-export const rootPath = [];
+export const rootPath = [] satisfies PathSegments;
 
 /**
  * Converts a {@link Path} to a {@link PathSegments} array.
@@ -92,13 +112,28 @@ const defaultWriteOptions = {
 };
 
 export class MiniFS {
-  protected files: Directory = {};
+  protected files = new Directory();
 
   // Options
   protected preferErrors: boolean;
 
   constructor(options?: MiniFSOptions) {
     this.preferErrors = options?.preferErrors ?? false;
+  }
+
+  *walk(
+    dir = this.files,
+    path: PathSegments = [],
+  ): Generator<[PathSegments, Entry]> {
+    for (const [name, entry] of Object.entries(dir.content)) {
+      const entryPath = [...path, name];
+
+      yield [entryPath, entry];
+
+      if (entry instanceof Directory) {
+        yield* this.walk(entry, entryPath);
+      }
+    }
   }
 
   /**
@@ -116,9 +151,9 @@ export class MiniFS {
 
     let dir = this.files;
     for (const pathSegment of path) {
-      if (!(pathSegment in dir)) {
+      if (!(pathSegment in dir.content)) {
         if (recursive) {
-          dir[pathSegment] = {};
+          dir.content[pathSegment] = new Directory();
         } else if (this.preferErrors) {
           throw new Error(
             `[MiniFS.createDirectory] Directory "${pathSegment}" does not exist.`,
@@ -128,7 +163,7 @@ export class MiniFS {
         }
       }
 
-      const nextEntry = dir[pathSegment];
+      const nextEntry = dir.content[pathSegment];
 
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
@@ -149,30 +184,26 @@ export class MiniFS {
     path = pathAsSegments(path);
 
     let entry: Entry = this.files;
-    for (const [i, pathSegment] of path.entries()) {
-      if (!(pathSegment in entry)) {
-        return null;
-      }
-
-      const isLastSegment = i == path.length - 1;
-
+    for (const pathSegment of path) {
       if (entry instanceof File) {
         if (this.preferErrors) {
-          throw new Error(`[MiniFS.readEntry] "${pathSegment}" is a file.`);
+          throw new Error(
+            `[MiniFS.readEntry] Intermediate path segment "${path}" is a file.`,
+          );
         }
         return null;
       }
 
-      const nextEntry: Entry | undefined = entry[pathSegment];
-
-      if (!isLastSegment && nextEntry instanceof File) {
+      if (!(pathSegment in entry.content)) {
         if (this.preferErrors) {
-          throw new Error(`[MiniFS.readEntry] "${pathSegment}" is a file.`);
+          throw new Error(
+            `[MiniFS.readEntry] Intermediate path segment "${pathSegment}" does not exist.`,
+          );
         }
         return null;
       }
 
-      entry = nextEntry;
+      entry = entry.content[pathSegment];
     }
 
     return entry;
@@ -201,7 +232,7 @@ export class MiniFS {
       if (returnEntry) {
         return entry;
       }
-      return Object.keys(entry);
+      return Object.keys(entry.content);
     }
 
     if (this.preferErrors) {
@@ -268,13 +299,13 @@ export class MiniFS {
     for (const [i, pathSegment] of path.entries()) {
       const isLastSegment = i == path.length - 1;
 
-      if (!(pathSegment in dir)) {
+      if (!(pathSegment in dir.content)) {
         if (recursive) {
           if (isLastSegment) {
-            dir[pathSegment] = new File(pathSegment, content);
+            dir.content[pathSegment] = new File(pathSegment, content);
             return true;
           }
-          dir[pathSegment] = {};
+          dir.content[pathSegment] = new Directory();
         } else if (this.preferErrors) {
           throw new Error(
             `[MiniFS.writeFile] Directory "${pathSegment}" does not exist.`,
@@ -284,7 +315,7 @@ export class MiniFS {
         }
       }
 
-      const nextEntry = dir[pathSegment];
+      const nextEntry = dir.content[pathSegment];
 
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
@@ -306,7 +337,7 @@ export class MiniFS {
     for (const [i, pathSegment] of path.entries()) {
       const isLastSegment = i == path.length - 1;
 
-      if (!(pathSegment in dir)) {
+      if (!(pathSegment in dir.content)) {
         if (this.preferErrors) {
           throw new Error(
             `[MiniFS.removeDirectory] Directory "${pathSegment}" does not exist.`,
@@ -315,7 +346,7 @@ export class MiniFS {
         return false;
       }
 
-      const nextEntry = dir[pathSegment];
+      const nextEntry = dir.content[pathSegment];
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
           throw new Error(
@@ -326,7 +357,7 @@ export class MiniFS {
       }
 
       if (isLastSegment) {
-        delete dir[pathSegment];
+        delete dir.content[pathSegment];
         return true;
       }
 

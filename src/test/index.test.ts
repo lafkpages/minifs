@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { MiniFS, rootPath } from "..";
+import { Directory, File, MiniFS, Node, rootPath } from "..";
 
 test("createDirectory + readDirectory                     ", () => {
   const fs = new MiniFS();
@@ -119,4 +119,30 @@ test("writeFile + readFile + readDirectory (recursive)    ", () => {
   expect(fs.readDirectory(rootPath)).toEqual(["myParentDir"]);
 
   expect(fs.readDirectory(path)).toBeNull();
+});
+
+test("writeFile + walk (recursive)                        ", () => {
+  const fs = new MiniFS();
+  const path = "foo/bar/baz.txt";
+  const content = "Hello, World!";
+
+  expect(fs.writeFile(path, content)).toBeTrue();
+
+  for (const [path, entry] of fs.walk()) {
+    expect(path).toBeArray();
+    expect(path).not.toBeEmpty();
+
+    for (const pathSegment of path) {
+      expect(pathSegment).toBeString();
+      expect(pathSegment).not.toBeEmpty();
+    }
+
+    expect(entry).toBeInstanceOf(Node);
+
+    if (path.at(-1) === "baz.txt") {
+      expect(entry).toBeInstanceOf(File);
+    } else {
+      expect(entry).toBeInstanceOf(Directory);
+    }
+  }
 });
