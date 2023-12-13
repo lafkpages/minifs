@@ -19,7 +19,7 @@
     "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist --target es6 src/index.ts",
     "format": "prettier --write .",
     "prepublishOnly": "bun run build",
-    "version": "auto-changelog"
+    "changelog": "auto-changelog"
   },
   "files": [
     "dist"
