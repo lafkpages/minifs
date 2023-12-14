@@ -1,3 +1,9 @@
+export enum NodeType {
+  Node,
+  File,
+  Directory,
+}
+
 export class Node {
   content?: unknown;
 
@@ -5,6 +11,10 @@ export class Node {
    * Unknown data associated with the node.
    */
   data: Record<string, unknown> = {};
+
+  getType() {
+    return NodeType.Node;
+  }
 }
 
 export class File extends Node {
@@ -18,6 +28,10 @@ export class File extends Node {
     this.name = name;
     this.content = content;
   }
+
+  getType() {
+    return NodeType.File;
+  }
 }
 
 export type DirectoryContent = {
@@ -30,6 +44,10 @@ export class Directory extends Node {
     super();
 
     this.content = content || {};
+  }
+
+  getType() {
+    return NodeType.Directory;
   }
 }
 

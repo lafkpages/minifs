@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { Directory, File, MiniFS, Node, rootPath } from "..";
+import { Directory, File, MiniFS, Node, NodeType, rootPath } from "..";
 
 test("createDirectory + readDirectory                     ", () => {
   const fs = new MiniFS();
@@ -141,8 +141,10 @@ test("writeFile + walk (recursive)                        ", () => {
 
     if (path.at(-1) === "baz.txt") {
       expect(entry).toBeInstanceOf(File);
+      expect(entry.getType()).toBe(NodeType.File);
     } else {
       expect(entry).toBeInstanceOf(Directory);
+      expect(entry.getType()).toBe(NodeType.Directory);
     }
   }
 });
