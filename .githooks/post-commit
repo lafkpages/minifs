@@ -4,7 +4,16 @@
 exec 1>&2
 
 # Generate the changelog
-if ! bun run auto-changelog; then
+if ! bun run -b changelog; then
   echo "Changelog generation failed"
   exit 2
 fi
+
+# Format the changelog
+if ! bun run -b prettier --write CHANGELOG.md; then
+  echo "Changelog formatting failed"
+  exit 5
+fi
+
+# Stage the changelog
+git add CHANGELOG.md

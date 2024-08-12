@@ -4,7 +4,7 @@
 exec 1>&2
 
 # Check that Prettier has been run
-if ! bun run prettier --check .; then
+if ! bun run -b prettier --check .; then
   echo "Prettier errors"
   exit 1
 fi
@@ -18,7 +18,7 @@ if [ "$?" != 0 ]; then
 fi
 
 # Check for TypeScript errors
-if ! bun run tsc --noEmit; then
+if ! bun run -b tsc --noEmit; then
   echo "TypeScript errors"
   exit 4
 fi
