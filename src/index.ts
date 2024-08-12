@@ -132,6 +132,10 @@ export interface WriteOptions {
   recursive?: boolean;
 }
 
+export interface WriteCallback<TFileContent, TData> {
+  (file: File<TFileContent, TData>): void;
+}
+
 // Do NOT type these as ReadOptions or WriteOptions,
 // as otherwise when destructuring the options, the
 // values will show as possibly undefined as the
@@ -319,33 +323,41 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
     return null;
   }
 
-  /**
-   * Writes a file at the given path.
-   * @param content Optional. The content of the file.
-   * @returns A boolean indicating whether the file was written successfully.
-   */
-  writeFile(path: Path, content?: TFileContent, options?: WriteOptions) {
-    path = pathAsSegments(path);
-
-    const { recursive } = {
-      ...defaultWriteOptions,
-      ...options,
-    };
-
+  private _writeFile(
+    path: PathSegments,
+    callback: WriteCallback<TFileContent, TData>,
+    options: Required<WriteOptions>
+  ) {
     let dir = this.files;
     for (const [i, pathSegment] of path.entries()) {
       const isLastSegment = i == path.length - 1;
 
       if (!(pathSegment in dir.content)) {
-        if (recursive) {
+        if (options.recursive) {
           if (isLastSegment) {
-            dir.content[pathSegment] = new File(pathSegment, content);
+            if (pathSegment in dir.content) {
+              const entry = dir.content[pathSegment];
+              if (entry.isFile()) {
+                callback(entry);
+              } else if (this.preferErrors) {
+                throw new Error( // TODO: path join function?
+                  `[MiniFS._writeFile] "${path.join("/")}" is a directory.`
+                );
+              } else {
+                return false;
+              }
+            } else {
+              dir.content[pathSegment] = new File<TFileContent, TData>(
+                pathSegment
+              );
+              callback(dir.content[pathSegment] as File<TFileContent, TData>);
+            }
             return true;
           }
           dir.content[pathSegment] = new Directory(pathSegment);
         } else if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.writeFile] Directory "${pathSegment}" does not exist.`
+            `[MiniFS._writeFile] Directory "${pathSegment}" does not exist.`
           );
         } else {
           return false;
@@ -356,7 +368,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
 
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
-          throw new Error(`[MiniFS.writeFile] "${pathSegment}" is a file.`);
+          throw new Error(`[MiniFS._writeFile] "${pathSegment}" is a file.`);
         }
         return false;
       }
@@ -365,6 +377,46 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
     }
 
     return true;
+  }
+
+  /**
+   * Writes to a file's content at the given path.
+   * @param content Optional. The content of the file.
+   * @returns A boolean indicating whether the file was written successfully.
+   */
+  writeFile(path: Path, content?: TFileContent, options?: WriteOptions) {
+    return this._writeFile(
+      pathAsSegments(path),
+      (file) => {
+        file.content = content;
+      },
+      {
+        ...defaultWriteOptions,
+        ...options,
+      }
+    );
+  }
+
+  /**
+   * Runs a callback on a file at the given path.
+   * If the file does not exist, it will be created.
+   *
+   * This could be used, for example, to modify a file's `data` property.
+   * Or it could be used to modify both its data and its content in one go.
+   * If you only want to modify the content, use {@link MiniFS.writeFile}.
+   *
+   * @param callback The callback to run on the file.
+   * @returns A boolean indicating whether the file was written successfully.
+   */
+  writeFileWithCallback(
+    path: Path,
+    callback: WriteCallback<TFileContent, TData>,
+    options?: WriteOptions
+  ) {
+    return this._writeFile(pathAsSegments(path), callback, {
+      ...defaultWriteOptions,
+      ...options,
+    });
   }
 
   remove(path: Path) {
