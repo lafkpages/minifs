@@ -5,6 +5,7 @@ export enum NodeType {
 }
 
 export class Node {
+  name?: string;
   content?: unknown;
 
   /**
@@ -27,7 +28,6 @@ export class Node {
 
 export class File<TFileContent = unknown> extends Node {
   name: string;
-
   content?: TFileContent;
 
   constructor(name: string, content?: TFileContent) {
@@ -46,11 +46,13 @@ export interface DirectoryContent<TFileContent = unknown> {
   [fileName: string]: Entry<TFileContent>;
 }
 export class Directory<TFileContent = unknown> extends Node {
-  content;
+  name: string;
+  content: DirectoryContent<TFileContent>;
 
-  constructor(content?: DirectoryContent<TFileContent>) {
+  constructor(name: string, content?: DirectoryContent<TFileContent>) {
     super();
 
+    this.name = name;
     this.content = content || {};
   }
 
@@ -140,7 +142,7 @@ const defaultWriteOptions = {
 };
 
 export class MiniFS<TFileContent = unknown> {
-  protected files = new Directory<TFileContent>();
+  protected files = new Directory<TFileContent>("");
 
   // Options
   protected preferErrors: boolean;
@@ -181,7 +183,7 @@ export class MiniFS<TFileContent = unknown> {
     for (const pathSegment of path) {
       if (!(pathSegment in dir.content)) {
         if (recursive) {
-          dir.content[pathSegment] = new Directory();
+          dir.content[pathSegment] = new Directory(pathSegment);
         } else if (this.preferErrors) {
           throw new Error(
             `[MiniFS.createDirectory] Directory "${pathSegment}" does not exist.`
@@ -333,7 +335,7 @@ export class MiniFS<TFileContent = unknown> {
             dir.content[pathSegment] = new File(pathSegment, content);
             return true;
           }
-          dir.content[pathSegment] = new Directory();
+          dir.content[pathSegment] = new Directory(pathSegment);
         } else if (this.preferErrors) {
           throw new Error(
             `[MiniFS.writeFile] Directory "${pathSegment}" does not exist.`
