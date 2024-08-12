@@ -78,7 +78,7 @@ test("createDirectory + readDirectory + remove (recursive)", () => {
 });
 
 test("writeFile + readFile + readDirectory                ", () => {
-  const fs = new MiniFS();
+  const fs = new MiniFS<string>();
   const path = "myFile.txt";
   const content = "Hello, World!";
 
@@ -98,7 +98,7 @@ test("writeFile + readFile + readDirectory                ", () => {
 });
 
 test("writeFile + readFile + readDirectory (recursive)    ", () => {
-  const fs = new MiniFS();
+  const fs = new MiniFS<string>();
   const path = "myParentDir/myFile.txt";
   const content = "Hello, World!";
 
@@ -122,7 +122,7 @@ test("writeFile + readFile + readDirectory (recursive)    ", () => {
 });
 
 test("writeFile + walk (recursive)                        ", () => {
-  const fs = new MiniFS();
+  const fs = new MiniFS<string>();
   const path = "foo/bar/baz.txt";
   const content = "Hello, World!";
 
