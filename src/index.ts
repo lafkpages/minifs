@@ -4,14 +4,14 @@ export enum NodeType {
   Directory,
 }
 
-export class Node {
+export class Node<TData = unknown> {
   name?: string;
   content?: unknown;
 
   /**
    * Unknown data associated with the node.
    */
-  data: Record<string, unknown> = {};
+  data?: TData;
 
   getType() {
     return NodeType.Node;
@@ -26,7 +26,7 @@ export class Node {
   }
 }
 
-export class File<TFileContent = unknown> extends Node {
+export class File<TFileContent = unknown, TData = unknown> extends Node<TData> {
   name: string;
   content?: TFileContent;
 
@@ -42,14 +42,17 @@ export class File<TFileContent = unknown> extends Node {
   }
 }
 
-export interface DirectoryContent<TFileContent = unknown> {
-  [fileName: string]: Entry<TFileContent>;
+export interface DirectoryContent<TFileContent = unknown, TData = unknown> {
+  [fileName: string]: Entry<TFileContent, TData>;
 }
-export class Directory<TFileContent = unknown> extends Node {
+export class Directory<
+  TFileContent = unknown,
+  TData = unknown,
+> extends Node<TData> {
   name: string;
-  content: DirectoryContent<TFileContent>;
+  content: DirectoryContent<TFileContent, TData>;
 
-  constructor(name: string, content?: DirectoryContent<TFileContent>) {
+  constructor(name: string, content?: DirectoryContent<TFileContent, TData>) {
     super();
 
     this.name = name;
@@ -64,9 +67,9 @@ export class Directory<TFileContent = unknown> extends Node {
 /**
  * A file system entry, which can be either a file or a directory.
  */
-export type Entry<TFileContent = unknown> =
-  | File<TFileContent>
-  | Directory<TFileContent>;
+export type Entry<TFileContent = unknown, TData = unknown> =
+  | File<TFileContent, TData>
+  | Directory<TFileContent, TData>;
 
 /**
  * A file path.
@@ -141,8 +144,8 @@ const defaultWriteOptions = {
   recursive: true,
 };
 
-export class MiniFS<TFileContent = unknown> {
-  protected files = new Directory<TFileContent>("");
+export class MiniFS<TFileContent = unknown, TData = unknown> {
+  protected files = new Directory<TFileContent, TData>("");
 
   // Options
   protected preferErrors: boolean;
@@ -213,7 +216,7 @@ export class MiniFS<TFileContent = unknown> {
   protected readEntry(path: Path) {
     path = pathAsSegments(path);
 
-    let entry: Entry<TFileContent> = this.files;
+    let entry: Entry<TFileContent, TData> = this.files;
     for (const pathSegment of path) {
       if (entry instanceof File) {
         if (this.preferErrors) {
@@ -243,7 +246,9 @@ export class MiniFS<TFileContent = unknown> {
     path: Path,
     options?: T
   ):
-    | (T["returnEntry"] extends true ? Directory<TFileContent> : string[])
+    | (T["returnEntry"] extends true
+        ? Directory<TFileContent, TData>
+        : string[])
     | null;
   readDirectory(path: Path, options?: ReadOptions) {
     const entry = this.readEntry(path);
@@ -276,7 +281,9 @@ export class MiniFS<TFileContent = unknown> {
   readFile<T extends ReadOptions>(
     path: Path,
     options?: T
-  ): (T["returnEntry"] extends true ? File<TFileContent> : TFileContent) | null;
+  ):
+    | (T["returnEntry"] extends true ? File<TFileContent, TData> : TFileContent)
+    | null;
   readFile(path: Path, options?: ReadOptions) {
     const entry = this.readEntry(path);
 
