@@ -160,7 +160,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
 
   *walk(
     dir = this.files,
-    path: PathSegments = []
+    path: PathSegments = [],
   ): Generator<[PathSegments, Entry]> {
     for (const [name, entry] of Object.entries(dir.content)) {
       const entryPath = [...path, name];
@@ -193,7 +193,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
           dir.content[pathSegment] = new Directory(pathSegment);
         } else if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.createDirectory] Directory "${pathSegment}" does not exist.`
+            `[MiniFS.createDirectory] Directory "${pathSegment}" does not exist.`,
           );
         } else {
           return false;
@@ -205,7 +205,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.createDirectory] "${pathSegment}" is a file.`
+            `[MiniFS.createDirectory] "${pathSegment}" is a file.`,
           );
         }
         return false;
@@ -225,7 +225,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
       if (entry instanceof File) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.readEntry] Intermediate path segment "${path}" is a file.`
+            `[MiniFS.readEntry] Intermediate path segment "${path}" is a file.`,
           );
         }
         return null;
@@ -234,7 +234,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
       if (!(pathSegment in entry.content)) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.readEntry] Intermediate path segment "${pathSegment}" does not exist.`
+            `[MiniFS.readEntry] Intermediate path segment "${pathSegment}" does not exist.`,
           );
         }
         return null;
@@ -248,7 +248,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
 
   readDirectory<T extends ReadOptions>(
     path: Path,
-    options?: T
+    options?: T,
   ):
     | (T["returnEntry"] extends true
         ? Directory<TFileContent, TData>
@@ -284,7 +284,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
 
   readFile<T extends ReadOptions>(
     path: Path,
-    options?: T
+    options?: T,
   ):
     | (T["returnEntry"] extends true ? File<TFileContent, TData> : TFileContent)
     | null;
@@ -326,7 +326,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
   private _writeFile(
     path: PathSegments,
     callback: WriteCallback<TFileContent, TData>,
-    options: Required<WriteOptions>
+    options: Required<WriteOptions>,
   ) {
     let dir = this.files;
     for (const [i, pathSegment] of path.entries()) {
@@ -341,14 +341,14 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
                 callback(entry);
               } else if (this.preferErrors) {
                 throw new Error( // TODO: path join function?
-                  `[MiniFS._writeFile] "${path.join("/")}" is a directory.`
+                  `[MiniFS._writeFile] "${path.join("/")}" is a directory.`,
                 );
               } else {
                 return false;
               }
             } else {
               dir.content[pathSegment] = new File<TFileContent, TData>(
-                pathSegment
+                pathSegment,
               );
               callback(dir.content[pathSegment] as File<TFileContent, TData>);
             }
@@ -357,7 +357,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
           dir.content[pathSegment] = new Directory(pathSegment);
         } else if (this.preferErrors) {
           throw new Error(
-            `[MiniFS._writeFile] Directory "${pathSegment}" does not exist.`
+            `[MiniFS._writeFile] Directory "${pathSegment}" does not exist.`,
           );
         } else {
           return false;
@@ -393,7 +393,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
       {
         ...defaultWriteOptions,
         ...options,
-      }
+      },
     );
   }
 
@@ -411,7 +411,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
   writeFileWithCallback(
     path: Path,
     callback: WriteCallback<TFileContent, TData>,
-    options?: WriteOptions
+    options?: WriteOptions,
   ) {
     return this._writeFile(pathAsSegments(path), callback, {
       ...defaultWriteOptions,
@@ -429,7 +429,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
       if (!(pathSegment in dir.content)) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.removeDirectory] Directory "${pathSegment}" does not exist.`
+            `[MiniFS.removeDirectory] Directory "${pathSegment}" does not exist.`,
           );
         }
         return false;
@@ -439,7 +439,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
       if (nextEntry instanceof File) {
         if (this.preferErrors) {
           throw new Error(
-            `[MiniFS.removeDirectory] "${pathSegment}" is a file.`
+            `[MiniFS.removeDirectory] "${pathSegment}" is a file.`,
           );
         }
         return false;
