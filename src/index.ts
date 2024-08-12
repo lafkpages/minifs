@@ -15,6 +15,14 @@ export class Node {
   getType() {
     return NodeType.Node;
   }
+
+  isFile(): this is File {
+    return this.getType() === NodeType.File;
+  }
+
+  isDirectory(): this is Directory {
+    return this.getType() === NodeType.Directory;
+  }
 }
 
 export class File<TFileContent = unknown> extends Node {
@@ -30,7 +38,7 @@ export class File<TFileContent = unknown> extends Node {
   }
 
   getType() {
-    return NodeType.File;
+    return NodeType.File as const;
   }
 }
 
@@ -47,7 +55,7 @@ export class Directory<TFileContent = unknown> extends Node {
   }
 
   getType() {
-    return NodeType.Directory;
+    return NodeType.Directory as const;
   }
 }
 
