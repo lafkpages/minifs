@@ -26,7 +26,7 @@
   ],
   "auto-changelog": {
     "commitLimit": false,
-    "ignoreCommitPattern": "^[Cc]hangelog$|\\[nc\\]",
+    "ignoreCommitPattern": "^[Cc]hangelog$|\\[nc\\]|^(style|docs|ci)(\\(.+\\))?: ",
     "unreleased": true
   }
 }
