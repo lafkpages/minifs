@@ -136,15 +136,11 @@ export interface WriteCallback<TFileContent, TData> {
   (file: File<TFileContent, TData>): void;
 }
 
-// Do NOT type these as ReadOptions or WriteOptions,
-// as otherwise when destructuring the options, the
-// values will show as possibly undefined as the
-// option types have optional properties.
-const defaultReadOptions = {
+const defaultReadOptions: Required<ReadOptions> = {
   returnEntry: false,
 };
 
-const defaultWriteOptions = {
+const defaultWriteOptions: Required<WriteOptions> = {
   recursive: true,
 };
 
