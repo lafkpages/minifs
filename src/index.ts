@@ -1,4 +1,4 @@
-export enum NodeType {
+export const enum NodeType {
   Node,
   File,
   Directory,
