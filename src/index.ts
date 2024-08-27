@@ -65,7 +65,7 @@ export class Directory<
 }
 
 /**
- * A file system entry, which can be either a file or a directory.
+ * A file system entry, which can be either a {@link File} or a {@link Directory}.
  */
 export type Entry<TFileContent = unknown, TData = unknown> =
   | File<TFileContent, TData>
@@ -96,7 +96,7 @@ export type PathSegments = string[];
  * A constant representing the root path.
  * Can be passed to methods such as {@link MiniFS.readDirectory}.
  */
-export const rootPath = [] satisfies PathSegments;
+export const rootPath = [] as const satisfies PathSegments;
 
 /**
  * Converts a {@link Path} to a {@link PathSegments} array.
@@ -117,9 +117,7 @@ export interface MiniFSOptions {
 
 export interface ReadOptions {
   /**
-   * If true, returns the entry instead of its content.
-   *
-   * @see Entry
+   * If true, returns the {@link Entry} instead of its content.
    */
   returnEntry?: boolean;
 }
@@ -145,10 +143,10 @@ const defaultWriteOptions: Required<WriteOptions> = {
 };
 
 export class MiniFS<TFileContent = unknown, TData = unknown> {
-  protected files = new Directory<TFileContent, TData>("");
+  private files = new Directory<TFileContent, TData>("");
 
   // Options
-  protected preferErrors: boolean;
+  private preferErrors: boolean;
 
   constructor(options?: MiniFSOptions) {
     this.preferErrors = options?.preferErrors ?? false;
@@ -213,7 +211,7 @@ export class MiniFS<TFileContent = unknown, TData = unknown> {
     return true;
   }
 
-  protected readEntry(path: Path) {
+  private readEntry(path: Path) {
     path = pathAsSegments(path);
 
     let entry: Entry<TFileContent, TData> = this.files;
