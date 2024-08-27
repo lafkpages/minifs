@@ -8,12 +8,12 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "^1.1.6",
+    "@types/bun": "^1.1.8",
     "auto-changelog": "^2.4.0",
-    "prettier": "^3.1.1"
+    "prettier": "^3.3.3"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --minify && tsc --emitDeclarationOnly --declaration --outDir dist --target es2017 src/index.ts",
