@@ -1,6 +1,6 @@
 {
   "name": "@luisafk/minifs",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "An in-memory filesystem-like data structure.",
   "author": "LuisAFK",
   "repository": "https://github.com/lafkpages/minifs.git",
